@@ -25,6 +25,12 @@ class ModelWrapper():
         best_acc = 0
         last_step = 0
         self.model.train()
+        devX = list()
+        devY = list()
+
+        trainX = list()
+        trainY = list()
+
         for epoch in range(1, args.epochs+1):
             for batch in dataset:
                 feature, target = batch
@@ -51,7 +57,14 @@ class ModelWrapper():
                                                                                  args.batch_size))
                 if steps % args.test_interval == 0:
                     dev_acc = self.eval(dev_data, args)
+                    devX.append(epoch)
+                    devY.append(dev_acc)
                     if dev_acc > best_acc:
+                        print("Evaluating on the whole training dataset")
+                        train_acc = self.eval(dataset, args)
+                        trainX.append(epoch)
+                        trainY.append(train_acc)
+
                         best_acc = dev_acc
                         last_step = steps
                         if args.save_best:
@@ -61,6 +74,12 @@ class ModelWrapper():
                             print('early stop by {} steps.'.format(args.early_stop))
                 elif steps % args.save_interval == 0:
                     self._save(args.save_dir, 'snapshot', steps)
+        if args.train_plot:
+            import matplotlib.pyplot as plt
+            plt.plot(trainX, trainY, label='train score')
+            plt.plot(devX, devY, label='dev score')
+            plt.legend()
+            plt.show()
 
     def eval(self, dataset, args):
         self.model.eval()

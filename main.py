@@ -67,14 +67,27 @@ def main():
     args.cuda = (not args.no_cuda) and torch.cuda.is_available(); del args.no_cuda
     args.kernel_sizes = [int(x) for x in args.kernel_sizes.split(',')]
     args.num_classes = 2
-    cnn = ModelWrapper(CNN_1D(args), args)
+    args.train_plot = True
+
+    #model = ModelWrapper(CNN_1D(args), args)
+    model = torch.nn.Sequential(
+        torch.nn.Linear(56, 30),
+        torch.nn.ReLU(),
+        torch.nn.Dropout(args.dropout),
+        torch.nn.Linear(30, 30),
+        torch.nn.ReLU(),
+        torch.nn.Dropout(args.dropout),
+        torch.nn.Linear(30, 2),
+    )
+
+    model = ModelWrapper(model, args)
 
     if args.predict is not False:
-        do_pred(cnn, args)
+        do_pred(model, args)
     elif args.test:
-        do_test(cnn, args)
+        do_test(model, args)
     else:
-        do_train(cnn, args)
+        do_train(model, args)
 
 
 if __name__ == "__main__":
