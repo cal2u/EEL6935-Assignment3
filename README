@@ -2,4 +2,4 @@ Genomics prediction task for EEL6935: Big Data Ecosystems
 
 For the assignment, I tried using combinations of fully connected and recurrent layers, and I used a 10% dev partition to assess the model generalization.
 
-I modified the CNN model from https://github.com/Shawn1993/cnn-text-classification-pytorch to work on 1-Dimensional input, and I created a wrapper class to hide some of the training details.
+I modified the CNN and based pytorch training code off of https://github.com/Shawn1993/cnn-text-classification-pytorch to work on 1-Dimensional input. I created a wrapper class to hide some of the training details, which allowed the training code to easily be reused for multiple models.
